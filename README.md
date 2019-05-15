@@ -9,6 +9,8 @@ Method:<br>
 I used OpenCV for hough lines.<br>
 GrayScaled,Binary Thresholded, and Found Edges using canny edge operator.<br>
 This edge image was used to find circles in.<br>
+Car no. are found from patterns, since every new car starts with 1 wheel at start and then 2 wheel in between and then 1 again at the end<br>
+This pattern is used to find the car number and tire number respectively.<br>
 
 REMOVAL of false circles detected:<br>
 Limted circles to empirically found vertical range of actual tires<br>
