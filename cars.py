@@ -6,10 +6,10 @@ temp=None
 
 cap = cv2.VideoCapture('cars_passing_input.mp4')
 wheel_count=[]
-tire=0
-car=1
-flag=0
-wheel_position={}
+tire=0 ## flag to check if second tire has been found in the frame
+car=1 ## counter for which car number we are at
+flag=0 ## flag to check if its current car, is set to one a car is in frame and to zero again after theres no car for a certain period in frame
+wheel_position={} ## dictionary of  each wheel positiion at each frame 
 frame_count=0
 frame_width=int(cap.get(3))
 frame_height=int(cap.get(4))
@@ -24,10 +24,14 @@ while(cap.isOpened()):
 
         img=frame
 
-        
+        ## unused copy
         img1=deepcopy(img)
+        
+        ## gray scale the image##
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        ## remove noises ##
         blur = cv2.GaussianBlur(gray,(11,11),0)
+        ## find edges (to be passed to hough circles) ##
         edges = cv2.Canny(blur,0,200,apertureSize = 3)
 
         ## Detect circles in the image ##
@@ -37,6 +41,8 @@ while(cap.isOpened()):
         circles = np.uint16(np.around(circles))
        
         ## Function used to find speed of the wheel in contention##
+        ## For every wheel, we find the minimum position(i.e, starting position) and maximum position right now(ending position) and the 
+        ## associated frames with it this way we can computes pixels/frame
        
         def current_speed(cur_wheel):
             s=max(cur_wheel,key=lambda x:x[0][0])
@@ -107,9 +113,13 @@ while(cap.isOpened()):
                         w.append((i[0],i[1],i[2]))
                 except:
                     pass
+                
+                ## w contains circles associated with tires
+                
                 w=sorted(w,key=lambda x:x[0],reverse=True)
     
-        t=len(w)      
+        t=len(w)    
+        
         for x in w:
            
             cv2.circle(img,(x[0],x[1]),x[2],(0,0,255),2)
